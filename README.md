@@ -1,6 +1,6 @@
-# Facial Recognition in Golang using go-face
+# Facial Recognition in Golang
 
-This is a project in Go that demonstrates facial recognition using the go-face library. The entire project runs in a Docker container to ensure portability and ease of deployment.
+This is a facial recognition project that attempts to predict whether a person is Barack Obama, Joe Biden, or an unknown person. The project was built in Go and utilizes the go-face library for facial recognition. Since the go-face library is a wrapper for the dlib library, which is a tool for machine learning and computer vision developed in C++, to facilitate deployment and ensure portability, the entire project runs in a Docker container.
 
 ## Requirements
 
@@ -23,13 +23,13 @@ cd go-face-recognition
 3. Build the Docker image:
 
 ```bash
-docker compose up  --build -d
+docker build -t go-face-recognition .
 ```
 
 4. Run the Docker container:
 
 ```bash
-docker exec go-face-recognition go run cmd/main.go go run internal/cmd/main.go
+docker run go-face-recognition go run cmd/main.go
 ```
 
 This will execute the project inside the Docker container and demonstrate facial recognition.
@@ -42,12 +42,11 @@ The project uses the go-face library to perform facial recognition. The library 
 
 go-face-recognition/
 │
-├── testdata/
-│ ├── images/
-│ │ ├── obama.jpg
-│ │ ├── biden.jpg
-│ │ └── unknown.jpg
-│ └── models/
+├── images/
+│ ├── obama.jpg
+│ ├── biden.jpg
+│ └── unknown.jpg
+└── models/
 │ └── ...
 ├── internal/
 │ |── entity/
@@ -55,14 +54,13 @@ go-face-recognition/
 ├── cmd/
 │ └── main.go
 ├── Dockerfile
-├── docker-compose.yml
 ├── go.mod
 ├── go.sum
 └── README.md
 
-`testdata/` contains images used for testing the facial recognition model. The `images/` directory contains images of Barack Obama, Joe Biden, and an unknown person. The `models/` directory contains the pre-trained model used for facial recognition.
+The `images/` directory contains images of Barack Obama, Joe Biden, and an unknown person. The `models/` directory contains the pre-trained model used for facial recognition.
 
-`Dockerfile` contains the instructions for building the Docker image for the project. `docker-compose.yml` contains the configuration for running the Docker container.
+`Dockerfile` contains the instructions for building the Docker image for the project.
 
 ## Legal Disclaimer
 
