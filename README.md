@@ -1,6 +1,6 @@
 # Facial Recognition in Golang
 
-This is a facial recognition project that attempts to predict whether a person is Barack Obama, Joe Biden, or an unknown person. The project was built in Go and utilizes the go-face library for facial recognition. Since the go-face library is a wrapper for the dlib library, which is a tool for machine learning and computer vision developed in C++, to facilitate deployment and ensure portability, the entire project runs in a Docker container.
+This is a facial recognition project that attempts to predict whether a person is Donald Trump, Joe Biden, or an unknown person. The project was built in Go and utilizes the go-face library for facial recognition. Since the go-face library is a wrapper for the dlib library, which is a tool for machine learning and computer vision developed in C++, to facilitate deployment and ensure portability, the entire project runs in a Docker container.
 
 ## Requirements
 
@@ -58,7 +58,7 @@ go-face-recognition/
 ├── go.sum
 └── README.md
 
-The `images/` directory contains images of Barack Obama, Joe Biden, and an unknown person. The `models/` directory contains the pre-trained model used for facial recognition.
+The `images/` directory contains images of Donald Trump, Joe Biden, and an unknown person. The `models/` directory contains the pre-trained model used for facial recognition.
 
 `Dockerfile` contains the instructions for building the Docker image for the project.
 
