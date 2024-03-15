@@ -24,3 +24,5 @@ COPY ./cmd/ cmd/
 WORKDIR /app/cmd
 
 RUN go mod tidy
+
+WORKDIR /app
