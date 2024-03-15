@@ -33,12 +33,12 @@ func main() {
 
 	knowFacesTime := time.Now()
 
-	obama := entity.NewPerson(1, "Obama", []string{"obama.jpg", "obama-2.jpg"})
+	trump := entity.NewPerson(1, "Trump", []string{"trump.jpg", "trump-2.jpg"})
 	biden := entity.NewPerson(2, "Biden", []string{"biden.jpg", "biden-2.jpg"})
 
 	persons := map[int]*entity.Person{}
 
-	persons[obama.ID] = obama
+	persons[trump.ID] = trump
 	persons[biden.ID] = biden
 
 	var faces []face.Descriptor
