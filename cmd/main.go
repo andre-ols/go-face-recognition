@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"time"
 
 	"github.com/Kagami/go-face"
 	"github.com/andre-ols/go-face-recognition/internal/entity"
@@ -18,6 +19,8 @@ var (
 // recognizer, recognize faces, classify them using few known ones.
 func main() {
 
+	initialTime := time.Now()
+
 	// Init the recognizer.
 	rec, err := face.NewRecognizer(modelsDir)
 	if err != nil {
@@ -25,6 +28,10 @@ func main() {
 	}
 	// Free the resources when you're finished.
 	defer rec.Close()
+
+	fmt.Println("Time to init recognizer: ", time.Since(initialTime))
+
+	knowFacesTime := time.Now()
 
 	obama := entity.NewPerson(1, "Obama", []string{"obama.jpg", "obama-2.jpg"})
 	biden := entity.NewPerson(2, "Biden", []string{"biden.jpg", "biden-2.jpg"})
@@ -51,6 +58,10 @@ func main() {
 		}
 	}
 
+	fmt.Println("Time to recognize know faces: ", time.Since(knowFacesTime))
+
+	unknownFaceTime := time.Now()
+
 	// Pass the samples to the recognizer.
 	rec.SetSamples(faces, categories)
 
@@ -67,12 +78,20 @@ func main() {
 		log.Fatalf("Not a single face on the image")
 	}
 
+	fmt.Println("Time to recognize unknown face: ", time.Since(unknownFaceTime))
+
+	classifyTime := time.Now()
+
 	// Find the closest person.
 	catID := rec.ClassifyThreshold(unkFace.Descriptor, 0.3)
 
 	if catID < 0 {
 		log.Fatalf("Can't classify")
 	}
+
+	fmt.Println("Time to classify unknown face: ", time.Since(classifyTime))
+
+	fmt.Println("Total time: ", time.Since(initialTime))
 
 	// print the result
 	fmt.Println("Found person: ", persons[catID].Name)
