@@ -24,11 +24,3 @@ COPY ./cmd/ cmd/
 WORKDIR /app/cmd
 
 RUN go mod tidy
-
-# WORKDIR /app
-
-# Compile for Linux
-# RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o face-recognition ./cmd/main.go
-
-# Keep the container running
-CMD ["tail", "-f", "/dev/null"]
