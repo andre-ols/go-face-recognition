@@ -41,7 +41,7 @@ func main() {
 	persons[trump.ID] = trump
 	persons[biden.ID] = biden
 
-	faces := face.Descriptors{}
+	faces := []face.Descriptor{}
 	categories := []int32{}
 
 	for _, p := range persons {
@@ -100,7 +100,7 @@ func main() {
 	fmt.Println("Total time: ", time.Since(initialTime))
 
 	// print the result
-	fmt.Println("knowFaces")
+	fmt.Println("knowFaces: ")
 	for _, knowFaceID := range knowFacesID {
 		fmt.Println(persons[int(knowFaceID)].Name)
 	}
