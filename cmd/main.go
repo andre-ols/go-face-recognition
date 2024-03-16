@@ -66,11 +66,11 @@ func main() {
 	rec.SetSamples(faces, categories)
 
 	// Now let's try to classify some not yet known image.
-	testImage := filepath.Join(imagesDir, "biden-trump.jpg")
+	testImage := filepath.Join(imagesDir, "unknown.jpg")
 
 	unkFaces, err := rec.RecognizeFile(testImage)
 
-	fmt.Println(len(unkFaces))
+	fmt.Println("Faces: ", len(unkFaces))
 
 	if err != nil {
 		log.Fatalf("Can't recognize: %v", err)
