@@ -23,13 +23,13 @@ cd go-face-recognition
 3. Build the Docker image:
 
 ```bash
-docker build -t go-face-recognition .
+docker compose build -d
 ```
 
 4. Run the Docker container:
 
 ```bash
-docker run go-face-recognition go run cmd/main.go
+docker exec go-face-recognition go run cmd/main.go
 ```
 
 This will execute the project inside the Docker container and demonstrate facial recognition.
@@ -54,6 +54,7 @@ go-face-recognition/
 ├── cmd/
 │ └── main.go
 ├── Dockerfile
+├── docker-compose.yml
 ├── go.mod
 ├── go.sum
 └── README.md
