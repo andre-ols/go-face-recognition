@@ -41,8 +41,8 @@ func main() {
 	persons[trump.ID] = trump
 	persons[biden.ID] = biden
 
-	var faces []face.Descriptor
-	var categories []int32
+	faces := face.Descriptors{}
+	categories := []int32{}
 
 	for _, p := range persons {
 		for _, imagePath := range p.ImagesPath {
@@ -58,19 +58,19 @@ func main() {
 		}
 	}
 
+	// Pass the samples to the recognizer.
+	rec.SetSamples(faces, categories)
+
 	fmt.Println("Time to recognize know faces: ", time.Since(knowFacesTime))
 
 	unknownFacesTime := time.Now()
 
-	// Pass the samples to the recognizer.
-	rec.SetSamples(faces, categories)
-
 	// Now let's try to classify some not yet known image.
-	testImage := filepath.Join(imagesDir, "unknown.jpg")
+	unkImage := filepath.Join(imagesDir, "unknown.jpg")
 
-	unkFaces, err := rec.RecognizeFile(testImage)
+	unkFaces, err := rec.RecognizeFile(unkImage)
 
-	fmt.Println("Faces: ", len(unkFaces))
+	fmt.Println("Unknown Faces: ", len(unkFaces))
 
 	if err != nil {
 		log.Fatalf("Can't recognize: %v", err)

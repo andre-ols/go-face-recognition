@@ -26,3 +26,6 @@ WORKDIR /app/cmd
 RUN go mod tidy
 
 WORKDIR /app
+
+# Keep the container running
+CMD ["tail", "-f", "/dev/null"]

@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: go-face-recognition
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "./internal:/app/internal"
+      - "./images:/app/images"
+      - "./cmd:/app/cmd"
