@@ -60,39 +60,48 @@ func main() {
 
 	fmt.Println("Time to recognize know faces: ", time.Since(knowFacesTime))
 
-	unknownFaceTime := time.Now()
+	unknownFacesTime := time.Now()
 
 	// Pass the samples to the recognizer.
 	rec.SetSamples(faces, categories)
 
 	// Now let's try to classify some not yet known image.
-	testImage := filepath.Join(imagesDir, "unknown.jpg")
+	testImage := filepath.Join(imagesDir, "biden-trump.jpg")
 
-	unkFace, err := rec.RecognizeSingleFile(testImage)
+	unkFaces, err := rec.RecognizeFile(testImage)
+
+	fmt.Println(len(unkFaces))
 
 	if err != nil {
 		log.Fatalf("Can't recognize: %v", err)
 	}
 
-	if unkFace == nil {
-		log.Fatalf("Not a single face on the image")
+	if len(unkFaces) == 0 {
+		log.Fatalf("Don't have faces on the image")
 	}
 
-	fmt.Println("Time to recognize unknown face: ", time.Since(unknownFaceTime))
+	fmt.Println("Time to recognize unknown faces: ", time.Since(unknownFacesTime))
 
 	classifyTime := time.Now()
 
-	// Find the closest person.
-	catID := rec.ClassifyThreshold(unkFace.Descriptor, 0.3)
+	// Classify the unkown faces
+	knowFacesID := []int{}
+	for _, unkFace := range unkFaces {
+		catID := rec.ClassifyThreshold(unkFace.Descriptor, 0.3)
 
-	if catID < 0 {
-		log.Fatalf("Can't classify")
+		if catID < 0 {
+			continue
+		}
+		knowFacesID = append(knowFacesID, catID)
 	}
 
-	fmt.Println("Time to classify unknown face: ", time.Since(classifyTime))
+	fmt.Println("Time to classify unknown faces: ", time.Since(classifyTime))
 
 	fmt.Println("Total time: ", time.Since(initialTime))
 
 	// print the result
-	fmt.Println("Found person: ", persons[catID].Name)
+	fmt.Println("knowFaces")
+	for _, knowFaceID := range knowFacesID {
+		fmt.Println(persons[int(knowFaceID)].Name)
+	}
 }
