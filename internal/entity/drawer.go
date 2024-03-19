@@ -23,9 +23,7 @@ type DrawerImpl struct {
 }
 
 func (d *DrawerImpl) DrawFace(face face.Face) {
-	d.dst = image.NewRGBA((*d.img).Bounds())
 	rectColor := color.RGBA{0, 255, 0, 255}
-	draw.Draw(d.dst, d.dst.Bounds(), (*d.img), (*d.img).Bounds().Min, draw.Src)
 	d.drawLine(d.dst, face.Rectangle.Min.X, face.Rectangle.Min.Y, face.Rectangle.Max.X, face.Rectangle.Min.Y, rectColor)
 	d.drawLine(d.dst, face.Rectangle.Max.X, face.Rectangle.Min.Y, face.Rectangle.Max.X, face.Rectangle.Max.Y, rectColor)
 	d.drawLine(d.dst, face.Rectangle.Max.X, face.Rectangle.Max.Y, face.Rectangle.Min.X, face.Rectangle.Max.Y, rectColor)
@@ -93,5 +91,7 @@ func (d *DrawerImpl) SaveImage(path string) error {
 func NewDrawer(imagePath string) Drawer {
 	drawer := &DrawerImpl{}
 	drawer.loadImage(imagePath)
+	drawer.dst = image.NewRGBA((*drawer.img).Bounds())
+	draw.Draw(drawer.dst, drawer.dst.Bounds(), (*drawer.img), (*drawer.img).Bounds().Min, draw.Src)
 	return drawer
 }

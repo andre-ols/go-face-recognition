@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"image/color"
 	"log"
 	"path/filepath"
 	"time"
@@ -16,16 +15,15 @@ var (
 	imagesDir = "images"
 )
 
-var (
-	rectColor = color.RGBA{R: 0, G: 255, B: 0, A: 255}     // verde
-	textColor = color.RGBA{R: 255, G: 255, B: 255, A: 255} // branco
-)
-
 // This example shows the basic usage of the package: create an
 // recognizer, recognize faces, classify them using few known ones.
 func main() {
 
 	initialTime := time.Now()
+
+	defer func() {
+		fmt.Printf("\033[0;33mTotal time: %s\033[0;33m", time.Since(initialTime))
+	}()
 
 	// Init the recognizer.
 	rec, err := face.NewRecognizer(modelsDir)
@@ -35,7 +33,7 @@ func main() {
 	// Free the resources when you're finished.
 	defer rec.Close()
 
-	fmt.Println("Time to init recognizer: ", time.Since(initialTime))
+	fmt.Printf("\033[0;33mTime to init recognizer: %s\033[0m\n", time.Since(initialTime))
 
 	knowFacesTime := time.Now()
 
@@ -67,7 +65,7 @@ func main() {
 	// Pass the samples to the recognizer.
 	rec.SetSamples(faces, categories)
 
-	fmt.Println("Time to recognize know faces: ", time.Since(knowFacesTime))
+	fmt.Printf("\033[0;33mTime to recognize known faces: %s\033[0m\n", time.Since(knowFacesTime))
 
 	unknownFacesTime := time.Now()
 
@@ -75,8 +73,6 @@ func main() {
 	unkImage := filepath.Join(imagesDir, "unknown.jpg")
 
 	unkFaces, err := rec.RecognizeFile(unkImage)
-
-	fmt.Println("Unknown Faces: ", len(unkFaces))
 
 	if err != nil {
 		log.Fatalf("Can't recognize: %v", err)
@@ -86,12 +82,11 @@ func main() {
 		log.Fatalf("Don't have faces on the image")
 	}
 
-	fmt.Println("Time to recognize unknown faces: ", time.Since(unknownFacesTime))
+	fmt.Printf("\033[0;33mTime to recognize unknown faces: %s\033[0m\n", time.Since(unknownFacesTime))
 
 	classifyTime := time.Now()
 
-	// Classify the unkown faces
-
+	// Classify the unknown faces
 	knowFaces := []face.Face{}
 	for _, unkFace := range unkFaces {
 		catID := rec.ClassifyThreshold(unkFace.Descriptor, 0.3)
@@ -112,15 +107,15 @@ func main() {
 		knowFacesID = append(knowFacesID, catID)
 	}
 
-	fmt.Println("Time to classify unknown faces: ", time.Since(classifyTime))
-
-	fmt.Println("Total time: ", time.Since(initialTime))
+	fmt.Printf("\033[0;33mTime to classify unknown faces: %s\033[0m\n", time.Since(classifyTime))
 
 	// print the result
-	fmt.Println("knowFaces: ")
+	fmt.Printf("\033[0;32mFound %d faces\033[0m\n", len(knowFaces))
 	for _, knowFaceID := range knowFacesID {
-		fmt.Println(persons[int(knowFaceID)].Name)
+		fmt.Printf("\033[0;32mPerson: %s\033[0m\n", persons[int(knowFaceID)].Name)
 	}
+
+	drawerTime := time.Now()
 
 	drawer := entity.NewDrawer(unkImage)
 
@@ -130,4 +125,5 @@ func main() {
 
 	drawer.SaveImage(filepath.Join(imagesDir, "result.jpg"))
 
+	fmt.Printf("\033[0;33mTime to draw faces: %s\033[0m\n", time.Since(drawerTime))
 }
