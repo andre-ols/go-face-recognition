@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 	"log"
 	"path/filepath"
 	"time"
@@ -13,6 +14,11 @@ import (
 var (
 	modelsDir = "models"
 	imagesDir = "images"
+)
+
+var (
+	rectColor = color.RGBA{R: 0, G: 255, B: 0, A: 255}     // verde
+	textColor = color.RGBA{R: 255, G: 255, B: 255, A: 255} // branco
 )
 
 // This example shows the basic usage of the package: create an
@@ -85,6 +91,17 @@ func main() {
 	classifyTime := time.Now()
 
 	// Classify the unkown faces
+
+	knowFaces := []face.Face{}
+	for _, unkFace := range unkFaces {
+		catID := rec.ClassifyThreshold(unkFace.Descriptor, 0.3)
+
+		if catID < 0 {
+			continue
+		}
+		knowFaces = append(knowFaces, unkFace)
+	}
+
 	knowFacesID := []int{}
 	for _, unkFace := range unkFaces {
 		catID := rec.ClassifyThreshold(unkFace.Descriptor, 0.3)
@@ -104,4 +121,13 @@ func main() {
 	for _, knowFaceID := range knowFacesID {
 		fmt.Println(persons[int(knowFaceID)].Name)
 	}
+
+	drawer := entity.NewDrawer(unkImage)
+
+	for _, knowFace := range knowFaces {
+		drawer.DrawFace(knowFace)
+	}
+
+	drawer.SaveImage(filepath.Join(imagesDir, "result.jpg"))
+
 }
