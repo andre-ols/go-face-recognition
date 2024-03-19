@@ -8,26 +8,39 @@ import (
 	"math"
 	"os"
 
-	"github.com/Kagami/go-face"
+	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font"
+	"golang.org/x/image/math/fixed"
 )
 
 type Drawer interface {
-	DrawFace(face face.Face)
+	DrawFace(rectangle image.Rectangle, name string)
+	drawLine(img draw.Image, x0, y0, x1, y1 int, color color.RGBA)
+	drawName(txt string, x, y int)
 	loadImage(path string) error
+	loadFont(path string) error
 	SaveImage(path string) error
 }
 
 type DrawerImpl struct {
-	img *image.Image
-	dst *image.RGBA
+	img      *image.Image
+	dst      *image.RGBA
+	font     *truetype.Font
+	fontSize float64
+	color    color.RGBA
+	hinting  font.Hinting
+	dpi      float64
+	spacing  float64
 }
 
-func (d *DrawerImpl) DrawFace(face face.Face) {
+func (d *DrawerImpl) DrawFace(rectangle image.Rectangle, name string) {
 	rectColor := color.RGBA{0, 255, 0, 255}
-	d.drawLine(d.dst, face.Rectangle.Min.X, face.Rectangle.Min.Y, face.Rectangle.Max.X, face.Rectangle.Min.Y, rectColor)
-	d.drawLine(d.dst, face.Rectangle.Max.X, face.Rectangle.Min.Y, face.Rectangle.Max.X, face.Rectangle.Max.Y, rectColor)
-	d.drawLine(d.dst, face.Rectangle.Max.X, face.Rectangle.Max.Y, face.Rectangle.Min.X, face.Rectangle.Max.Y, rectColor)
-	d.drawLine(d.dst, face.Rectangle.Min.X, face.Rectangle.Max.Y, face.Rectangle.Min.X, face.Rectangle.Min.Y, rectColor)
+	d.drawLine(d.dst, rectangle.Min.X, rectangle.Min.Y, rectangle.Max.X, rectangle.Min.Y, rectColor)
+	d.drawLine(d.dst, rectangle.Max.X, rectangle.Min.Y, rectangle.Max.X, rectangle.Max.Y, rectColor)
+	d.drawLine(d.dst, rectangle.Max.X, rectangle.Max.Y, rectangle.Min.X, rectangle.Max.Y, rectColor)
+	d.drawLine(d.dst, rectangle.Min.X, rectangle.Max.Y, rectangle.Min.X, rectangle.Min.Y, rectColor)
+
+	d.drawName(name, rectangle.Min.X, rectangle.Max.Y)
 }
 
 func (d *DrawerImpl) drawLine(img draw.Image, x0, y0, x1, y1 int, color color.RGBA) {
@@ -59,6 +72,39 @@ func (d *DrawerImpl) drawLine(img draw.Image, x0, y0, x1, y1 int, color color.RG
 	}
 }
 
+func (d *DrawerImpl) drawName(txt string, x, y int) {
+
+	dr := &font.Drawer{
+		Dst:  d.dst,
+		Src:  image.NewUniform(d.color),
+		Face: truetype.NewFace(d.font, &truetype.Options{Size: d.fontSize, Hinting: d.hinting, DPI: d.dpi}),
+	}
+
+	dr.Dot = fixed.Point26_6{
+		X: fixed.I(x),
+		Y: fixed.I(y + int(d.fontSize) + int(d.spacing)),
+	}
+
+	dr.DrawString(txt)
+}
+
+func (d *DrawerImpl) loadFont(path string) error {
+	fontBytes, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	f, err := truetype.Parse(fontBytes)
+
+	if err != nil {
+		return err
+	}
+
+	d.font = f
+
+	return nil
+}
+
 func (d *DrawerImpl) loadImage(path string) error {
 	f, err := os.Open(path)
 	if err != nil {
@@ -88,10 +134,18 @@ func (d *DrawerImpl) SaveImage(path string) error {
 	return jpeg.Encode(f, d.dst, nil)
 }
 
-func NewDrawer(imagePath string) Drawer {
+func NewDrawer(imagePath, fontPath string) Drawer {
 	drawer := &DrawerImpl{}
 	drawer.loadImage(imagePath)
+	drawer.loadFont(fontPath)
 	drawer.dst = image.NewRGBA((*drawer.img).Bounds())
 	draw.Draw(drawer.dst, drawer.dst.Bounds(), (*drawer.img), (*drawer.img).Bounds().Min, draw.Src)
+
+	drawer.fontSize = 36.0
+	drawer.color = color.RGBA{0, 255, 0, 255}
+	drawer.hinting = font.HintingNone
+	drawer.dpi = 72.0
+	drawer.spacing = 1.5
+
 	return drawer
 }

@@ -33,7 +33,7 @@ func main() {
 	// Free the resources when you're finished.
 	defer rec.Close()
 
-	fmt.Printf("\033[0;33mTime to init recognizer: %s\033[0m\n", time.Since(initialTime))
+	fmt.Println("Time to init recognizer: ", time.Since(initialTime))
 
 	knowFacesTime := time.Now()
 
@@ -65,7 +65,7 @@ func main() {
 	// Pass the samples to the recognizer.
 	rec.SetSamples(faces, categories)
 
-	fmt.Printf("\033[0;33mTime to recognize known faces: %s\033[0m\n", time.Since(knowFacesTime))
+	fmt.Println("Time to recognize known faces: ", time.Since(knowFacesTime))
 
 	unknownFacesTime := time.Now()
 
@@ -82,21 +82,12 @@ func main() {
 		log.Fatalf("Don't have faces on the image")
 	}
 
-	fmt.Printf("\033[0;33mTime to recognize unknown faces: %s\033[0m\n", time.Since(unknownFacesTime))
+	fmt.Println("Time to recognize unknown faces: ", time.Since(unknownFacesTime))
 
 	classifyTime := time.Now()
 
 	// Classify the unknown faces
 	knowFaces := []face.Face{}
-	for _, unkFace := range unkFaces {
-		catID := rec.ClassifyThreshold(unkFace.Descriptor, 0.3)
-
-		if catID < 0 {
-			continue
-		}
-		knowFaces = append(knowFaces, unkFace)
-	}
-
 	knowFacesID := []int{}
 	for _, unkFace := range unkFaces {
 		catID := rec.ClassifyThreshold(unkFace.Descriptor, 0.3)
@@ -104,10 +95,11 @@ func main() {
 		if catID < 0 {
 			continue
 		}
-		knowFacesID = append(knowFacesID, catID)
+		knowFaces = append(knowFaces, unkFace)
+		knowFacesID = append(knowFacesID, int(catID))
 	}
 
-	fmt.Printf("\033[0;33mTime to classify unknown faces: %s\033[0m\n", time.Since(classifyTime))
+	fmt.Println("Time to classify unknown faces: ", time.Since(classifyTime))
 
 	// print the result
 	fmt.Printf("\033[0;32mFound %d faces\033[0m\n", len(knowFaces))
@@ -115,15 +107,12 @@ func main() {
 		fmt.Printf("\033[0;32mPerson: %s\033[0m\n", persons[int(knowFaceID)].Name)
 	}
 
-	drawerTime := time.Now()
+	drawer := entity.NewDrawer(unkImage, filepath.Join("fonts", "Roboto-Regular.ttf"))
 
-	drawer := entity.NewDrawer(unkImage)
-
-	for _, knowFace := range knowFaces {
-		drawer.DrawFace(knowFace)
+	for index, knowFace := range knowFaces {
+		drawer.DrawFace(knowFace.Rectangle, persons[knowFacesID[index]].Name)
 	}
 
 	drawer.SaveImage(filepath.Join(imagesDir, "result.jpg"))
 
-	fmt.Printf("\033[0;33mTime to draw faces: %s\033[0m\n", time.Since(drawerTime))
 }

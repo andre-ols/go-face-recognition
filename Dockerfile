@@ -20,6 +20,7 @@ COPY ./internal/ internal/
 COPY ./models/ models/
 COPY ./images/ images/
 COPY ./cmd/ cmd/
+COPY ./fonts fonts
 
 WORKDIR /app/cmd
 

@@ -23,7 +23,7 @@ cd go-face-recognition
 3. Build the Docker image:
 
 ```bash
-docker compose build -d
+docker compose up --build -d
 ```
 
 4. Run the Docker container:
