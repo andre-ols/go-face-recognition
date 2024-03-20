@@ -9,4 +9,5 @@ services:
     volumes:
       - "./internal:/app/internal"
       - "./images:/app/images"
+      - "./persons:/app/persons"
       - "./cmd:/app/cmd"

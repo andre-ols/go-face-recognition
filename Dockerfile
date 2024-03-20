@@ -21,6 +21,7 @@ COPY ./models/ models/
 COPY ./images/ images/
 COPY ./cmd/ cmd/
 COPY ./fonts fonts
+COPY ./persons persons
 
 WORKDIR /app/cmd
 
