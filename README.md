@@ -2,7 +2,23 @@
 
 Go-Face-Recognition is an advanced facial recognition system, based on the principles of FaceNet and developed entirely in Go language. It leverages cutting-edge technology and utilizes the go-face library, which is built upon the powerful dlib C++ library for high-performance facial analysis.
 
-## Overview
+## Table of Contents
+
+- [Overview](#overview)
+  - [About FaceNet](#about-facenet)
+  - [About dlib](#about-dlib)
+- [Key Features](#key-features)
+- [Usage](#usage)
+  - [Dynamic Loading of People](#dynamic-loading-of-people)
+  - [Recognition of Faces](#recognition-of-faces)
+  - [Output Generation](#output-generation)
+  - [Capabilities](#capabilities)
+- [Installation and Usage](#installation-and-usage)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
+
+## About FaceNet
 
 Go-Face-Recognition is based on the principles of [FaceNet](https://arxiv.org/abs/1503.03832), a groundbreaking facial recognition system developed by Google. FaceNet employs a deep neural network to directly learn a mapping from facial images to a compact Euclidean space, where distances between embeddings correspond directly to a measure of facial similarity. By leveraging this learned embedding space, tasks such as facial recognition, verification, and clustering become straightforward, as FaceNet embeddings serve as feature vectors that capture essential facial characteristics. This integration enables Go-Face-Recognition to achieve state-of-the-art performance in facial recognition tasks, making it a versatile and powerful tool for various applications.
 
@@ -68,7 +84,6 @@ This will execute the project inside the Docker container and demonstrate facial
 
 ```
 go-face-recognition/
-│
 ├── images/
 │ ├── result.jpg
 │ └── unknown.jpg
