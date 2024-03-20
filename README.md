@@ -66,6 +66,7 @@ This will execute the project inside the Docker container and demonstrate facial
 
 ## Project Structure
 
+```
 go-face-recognition/
 │
 ├── images/
@@ -73,16 +74,14 @@ go-face-recognition/
 │ └── unknown.jpg
 ├── persons/
 │ ├── donald_trump/
-│ └──── ...
-│ ├── joe_biden/
-│ └──── ...
-└── models/
+│ │ └── ...
+│ └── joe_biden/
+│ └── ...
+├── models/
 │ └── ...
 ├── internal/
-│ |── entity/
-│ └── ...
-│ |── usecases/
-│ └── ...
+│ ├── entity/
+│ └── usecases/
 ├── cmd/
 │ └── main.go
 ├── Dockerfile
@@ -90,6 +89,7 @@ go-face-recognition/
 ├── go.mod
 ├── go.sum
 └── README.md
+```
 
 The `images/` directory contains the input and output images. The `persons/` directory contains sub-folders for each person, with images of that person to be used in the model. The `models/` directory contains the trained model for facial recognition. The `internal/` directory contains the core logic of the system, including entities and use cases. The `cmd/` directory contains the main entry point of the system.
 
