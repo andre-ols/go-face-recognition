@@ -22,7 +22,7 @@ Go-Face-Recognition is based on the principles of [FaceNet](https://arxiv.org/ab
 
 ### Dynamic Loading of People
 
-This project dynamically loads people from within the 'persons' directory. Each person should have a subfolder with the person's name, containing images of that person to be used in the model. It is ideal to provide more than one image per person to improve classification accuracy. The images provided for each person should contain only one face, which is the face of the person.
+This project dynamically loads people from within the `persons/` directory. Each person should have a subfolder with the person's name, containing images of that person to be used in the model. It is ideal to provide more than one image per person to improve classification accuracy. The images provided for each person should contain only one face, which is the face of the person.
 
 ### Recognition of Faces
 
