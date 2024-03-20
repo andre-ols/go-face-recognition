@@ -43,14 +43,20 @@ The project uses the go-face library to perform facial recognition. The library 
 go-face-recognition/
 │
 ├── images/
-│ ├── obama.jpg
-│ ├── biden.jpg
+│ ├── result.jpg
 │ └── unknown.jpg
+├── persons/
+│ ├── donald_trump/
+│ └──── ...
+│ ├── joe_biden/
+│ └──── ...
 └── models/
 │ └── ...
 ├── internal/
 │ |── entity/
-│ └──── person.go
+│ └── ...
+│ |── usecases/
+│ └── ...
 ├── cmd/
 │ └── main.go
 ├── Dockerfile
@@ -62,10 +68,6 @@ go-face-recognition/
 The `images/` directory contains images of Donald Trump, Joe Biden, and an unknown person. The `models/` directory contains the pre-trained model used for facial recognition.
 
 `Dockerfile` contains the instructions for building the Docker image for the project.
-
-## Legal Disclaimer
-
-This project is for educational purposes only and should not be used for any illegal activities. The author is not responsible for any misuse of the information provided.
 
 ## License
 
