@@ -16,31 +16,26 @@ import (
 type Drawer interface {
 	DrawFace(rectangle image.Rectangle, name string)
 	drawLine(img draw.Image, x0, y0, x1, y1 int, color color.RGBA)
-	drawName(txt string, x, y int)
+	drawName(txt string, x, y int, h float64)
 	loadImage(path string) error
 	loadFont(path string) error
 	SaveImage(path string) error
 }
 
 type DrawerImpl struct {
-	img      *image.Image
-	dst      *image.RGBA
-	font     *truetype.Font
-	fontSize float64
-	color    color.RGBA
-	hinting  font.Hinting
-	dpi      float64
-	spacing  float64
+	img   *image.Image
+	dst   *image.RGBA
+	font  *truetype.Font
+	color color.RGBA
 }
 
 func (d *DrawerImpl) DrawFace(rectangle image.Rectangle, name string) {
-	rectColor := color.RGBA{0, 255, 0, 255}
-	d.drawLine(d.dst, rectangle.Min.X, rectangle.Min.Y, rectangle.Max.X, rectangle.Min.Y, rectColor)
-	d.drawLine(d.dst, rectangle.Max.X, rectangle.Min.Y, rectangle.Max.X, rectangle.Max.Y, rectColor)
-	d.drawLine(d.dst, rectangle.Max.X, rectangle.Max.Y, rectangle.Min.X, rectangle.Max.Y, rectColor)
-	d.drawLine(d.dst, rectangle.Min.X, rectangle.Max.Y, rectangle.Min.X, rectangle.Min.Y, rectColor)
+	d.drawLine(d.dst, rectangle.Min.X, rectangle.Min.Y, rectangle.Max.X, rectangle.Min.Y, d.color)
+	d.drawLine(d.dst, rectangle.Max.X, rectangle.Min.Y, rectangle.Max.X, rectangle.Max.Y, d.color)
+	d.drawLine(d.dst, rectangle.Max.X, rectangle.Max.Y, rectangle.Min.X, rectangle.Max.Y, d.color)
+	d.drawLine(d.dst, rectangle.Min.X, rectangle.Max.Y, rectangle.Min.X, rectangle.Min.Y, d.color)
 
-	d.drawName(name, rectangle.Min.X, rectangle.Max.Y)
+	d.drawName(name, rectangle.Min.X, rectangle.Max.Y, float64(rectangle.Max.Y-rectangle.Min.Y))
 }
 
 func (d *DrawerImpl) drawLine(img draw.Image, x0, y0, x1, y1 int, color color.RGBA) {
@@ -72,17 +67,20 @@ func (d *DrawerImpl) drawLine(img draw.Image, x0, y0, x1, y1 int, color color.RG
 	}
 }
 
-func (d *DrawerImpl) drawName(txt string, x, y int) {
+func (d *DrawerImpl) drawName(txt string, x, y int, h float64) {
+
+	// Define the font size as a fraction of the face height
+	fontSize := h / 3
 
 	dr := &font.Drawer{
 		Dst:  d.dst,
 		Src:  image.NewUniform(d.color),
-		Face: truetype.NewFace(d.font, &truetype.Options{Size: d.fontSize, Hinting: d.hinting, DPI: d.dpi}),
+		Face: truetype.NewFace(d.font, &truetype.Options{Size: fontSize, Hinting: font.HintingNone, DPI: 72.0}),
 	}
 
 	dr.Dot = fixed.Point26_6{
 		X: fixed.I(x),
-		Y: fixed.I(y + int(d.fontSize) + int(d.spacing)),
+		Y: fixed.I(y + int(fontSize)),
 	}
 
 	dr.DrawString(txt)
@@ -141,11 +139,7 @@ func NewDrawer(imagePath, fontPath string) Drawer {
 	drawer.dst = image.NewRGBA((*drawer.img).Bounds())
 	draw.Draw(drawer.dst, drawer.dst.Bounds(), (*drawer.img), (*drawer.img).Bounds().Min, draw.Src)
 
-	drawer.fontSize = 36.0
 	drawer.color = color.RGBA{0, 255, 0, 255}
-	drawer.hinting = font.HintingNone
-	drawer.dpi = 72.0
-	drawer.spacing = 1.5
 
 	return drawer
 }
